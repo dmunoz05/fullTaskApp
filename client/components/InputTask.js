@@ -1,44 +1,36 @@
 import React, { useEffect, useState } from "react";
-import {
-  Dimensions,
-  Text,
-  TextInput,
-  StyleSheet,
-  View,
-  TouchableHighlight,
-  KeyboardAvoidingView,
-  Keyboard,
-  Pressable,
-  Animated,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, View, TextInput, Pressable, Dimensions, StyleSheet, Animated } from 'react-native';
 import { AntDesign } from "@expo/vector-icons";
 
 export default function InputTask({ task, setTask }) {
   const [showEmojies, setShowEmojies] = useState(false);
   const [messageBody, setMessageBody] = useState("");
   const [fadeAnim] = useState(new Animated.Value(0.1));
+  const isReactNative = Platform.OS !== 'web';
 
   useEffect(() => {
-    const showSubscription = Keyboard.addListener("keyboardWillShow", () => {
-      setShowEmojies(true);
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-    });
-    const hideSubscription = Keyboard.addListener("keyboardWillHide", () => {
-      setShowEmojies(false);
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start();
-    });
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
+    if (isReactNative) {
+      const showSubscription = Keyboard.addListener("keyboardWillShow", () => {
+        setShowEmojies(true);
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }).start();
+      });
+      const hideSubscription = Keyboard.addListener("keyboardWillHide", () => {
+        setShowEmojies(false);
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: true,
+        }).start();
+      });
+      return () => {
+        showSubscription.remove();
+        hideSubscription.remove();
+      };
+    }
   }, []);
 
   const handleSubmit = async () => {
@@ -78,7 +70,7 @@ export default function InputTask({ task, setTask }) {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={isReactNative ? (Platform.OS === "ios" ? "padding" : "height") : undefined}
     >
       <View style={styles.container}>
         {showEmojies && (

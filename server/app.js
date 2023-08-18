@@ -14,15 +14,9 @@ import {
 
 const corsOptions = {
     origin: "*", 
-    methods: ["POST", "GET"],
+    methods: ["POST", "GET", "PUT"],
     credentials: true,
 };
-
-// const corsOptions = {
-//     origin: "http://127.0.0.1:5173", 
-//     methods: ["POST", "GET"],
-//     credentials: true,
-// };
 
 const app = express();
 app.use(express.json());
